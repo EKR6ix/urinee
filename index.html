@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>វិញ្ញាសាអនុវត្ត៖ ការវិភាគគីមីទឹកនោម កករទឹកនោម & សារធាតុរាវក្នុងរាងកាយ - ថ្នាក់ BSL ឆ្នាំទី១</title>
+<link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b1120;
+  --card: #15203b;
+  --card-border: #1e293b;
+  --primary: #38bdf8;
+  --primary-hover: #0284c7;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: #f59e0b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kantumruy Pro', 'Inter', system-ui, sans-serif; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 16px; display: flex; flex-direction: column; align-items: center; }
+.wrap { width: 100%; max-width: 840px; margin: 0 auto; }
+header.hero { text-align: center; margin-bottom: 20px; }
+.hero h1 { font-size: 1.30rem; color: var(--primary); margin-bottom: 6px; line-height: 1.45; }
+.hero p { color: var(--text-muted); font-size: 0.88rem; }
+.card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--card-border); font-size: 0.88rem; }
+.badge { background: #0369a1; color: #bae6fd; padding: 4px 10px; border-radius: 9999px; font-weight: 600; font-size: 0.75rem; }
+.timer-box { font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 6px; font-size: 1.05rem; }
+.timer-box.urgent { color: var(--danger); }
+.question-title { font-size: 1.05rem; line-height: 1.6; font-weight: 600; margin-bottom: 14px; color: var(--text); }
+.diagram-box { display: flex; justify-content: center; align-items: center; background: #080e1e; border: 1px solid #1e3a8a; border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+.options-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.option-btn { background: #0b1120; border: 1px solid var(--card-border); color: var(--text); padding: 14px 16px; border-radius: 10px; text-align: left; font-size: 0.94rem; cursor: pointer; transition: all 0.15s ease; line-height: 1.5; display: flex; align-items: flex-start; gap: 10px; }
+.option-btn:hover:not(:disabled) { border-color: var(--primary); background: #1a253c; }
+.option-btn:disabled { cursor: default; }
+.option-btn.correct { background: rgba(34, 197, 94, 0.22) !important; border-color: var(--success) !important; color: #86efac; font-weight: 600; }
+.option-btn.wrong { background: rgba(239, 68, 68, 0.22) !important; border-color: var(--danger) !important; color: #fca5a5; }
+.letter { font-weight: 700; color: var(--primary); font-size: 1.05rem; min-width: 25px; }
+.hint-section { margin-bottom: 16px; }
+.hint-btn { background: none; border: none; color: var(--accent); font-size: 0.88rem; cursor: pointer; text-decoration: underline; padding: 0; }
+.hint-content { display: none; margin-top: 8px; background: rgba(245, 158, 11, 0.12); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 4px; font-size: 0.88rem; color: #fde68a; line-height: 1.5; }
+.feedback-box { display: none; background: #0d1a33; border: 1px solid #2563eb; border-radius: 10px; padding: 16px; margin-bottom: 16px; line-height: 1.5; font-size: 0.9rem; }
+.feedback-box h4 { margin-bottom: 8px; color: #93c5fd; font-size: 0.95rem; }
+.controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.action-btn { background: var(--primary); color: #090d16; border: none; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 0.92rem; cursor: pointer; transition: background 0.15s; }
+.action-btn:hover { background: var(--primary-hover); }
+.action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.progress-wrap { margin-top: 20px; }
+.progress-bar-bg { background: #1e293b; height: 8px; border-radius: 9999px; overflow: hidden; }
+.progress-bar-fill { background: var(--primary); height: 100%; width: 3.33%; transition: width 0.3s; }
+.final-screen { display: none; text-align: center; padding: 36px 12px; }
+.final-score { font-size: 3rem; font-weight: 800; color: var(--primary); margin: 16px 0; }
+.review-list { margin-top: 20px; text-align: left; }
+.review-item { border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 10px; background: #0b1120; font-size: 0.88rem; }
+.review-item summary { cursor: pointer; font-weight: 700; color: var(--primary); }
+.review-item p { margin-top: 6px; color: #cbd5e1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>វិញ្ញាសាអនុវត្ត៖ គីមីទឹកនោម កករមីក្រូទស្សន៍ & សារធាតុរាវក្នុងរាងកាយ (Urine Chemistry, Sediment & Body Fluids)</h1>
+    <p>ផ្អែកលើស្លាយមេរៀនវេជ្ជបណ្ឌិត Dr. Meun Lida (UHS) • ៣០ សំណួរគ្លីនិក & មន្ទីរពិសោធន៍ • Auto-Shuffled • ៦០ វិនាទី</p>
+  </header>
+
+  <div class="card" id="quizCard">
+    <div class="status-bar">
+      <span class="badge" id="topicBadge">មេរៀន</span>
+      <span id="qCount" style="font-weight:600;">សំណួរទី 1 នៃ 30</span>
+      <div class="timer-box" id="timerBox">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="timerText">60s</span>
+      </div>
+    </div>
+
+    <div id="diagramContainer" class="diagram-box"></div>
+
+    <div class="question-title" id="questionTitle"></div>
+
+    <div class="hint-section">
+      <button class="hint-btn" id="hintToggleBtn" onclick="toggleHint()">💡 បង្ហាញតម្រុយគ្លីនិក (Show Hint)</button>
+      <div class="hint-content" id="hintContent"></div>
+    </div>
+
+    <div class="options-grid" id="optionsGrid"></div>
+
+    <div class="feedback-box" id="feedbackBox">
+      <h4>ការពន្យល់លម្អិតក្នុងមន្ទីរពិសោធន៍ (Lab Rationale):</h4>
+      <div id="feedbackText"></div>
+    </div>
+
+    <div class="controls">
+      <span style="font-size:0.88rem; color:var(--text-muted);" id="liveScore">ពិន្ទុ: 0 / 0</span>
+      <button class="action-btn" id="nextBtn" onclick="nextQuestion()" disabled>សំណួរបន្ទាប់ →</button>
+    </div>
+  </div>
+
+  <div class="card final-screen" id="finalCard">
+    <h2>បញ្ចប់ការធ្វើតេស្ត!</h2>
+    <p style="margin-top:8px; color:var(--text-muted);">អ្នកបានឆ្លងកាត់ការអនុវត្តវិញ្ញាសា Urine Chemistry, Sediment & Body Fluids ៣០ សំណួររួចរាល់ហើយ។</p>
+    <div class="final-score" id="finalScoreVal">0%</div>
+    <p id="finalFeedback" style="margin-bottom: 24px; color: #cbd5e1; font-size:1.02rem; line-height:1.6;"></p>
+    <button class="action-btn" onclick="initQuiz()">ធ្វើវិញ្ញាសាសាឡើងវិញ (Shuffle ថ្មី)</button>
+    <div class="review-list" id="reviewContainer"></div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const rawQuestions = [
+  {
+    topic: "Urine Chemistry — Ascorbic Acid Interference [Analyze]",
+    title: "អ្នកជំងឺទឹកនោមផ្អែមម្នាក់មានកម្រិតជាតិស្ករក្នុងឈាមខ្ពស់ (Blood Glucose = 260 mg/dL) ប៉ុន្តែការធ្វើតេស្តទឹកនោមដោយបន្ទះ Dipstick បែរជាចេញលទ្ធផល Glucose: Negative និង Blood: Negative។ ក្រោយសាកសួរដឹងថាគាត់លេបថ្នាំបំប៉នវីតាមីនសេកម្រិតខ្ពស់ (2 g/day)។ តើយន្តការគីមីណាដែលបណ្តាលឱ្យមានលទ្ធផលអវិជ្ជមានក្លែងក្លាយនេះ?",
+    hint: "Ascorbic acid ជា Reducing agent ខ្លាំង ដែលប្រកួតប្រជែងដកស្រង់អ៊ីដ្រូសែនពែអុកស៊ីត (H2O2) ពីអង់ស៊ីម Peroxidase។",
+    svg: `<svg width="220" height="85" viewBox="0 0 220 85"><rect x="30" y="25" width="65" height="35" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><text x="62.5" y="46" fill="#38bdf8" font-size="9" text-anchor="middle">Glucose + O2</text><path d="M 100,42 L 125,42" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow)"/><rect x="130" y="25" width="65" height="35" rx="6" fill="#1e293b" stroke="#ef4444" stroke-width="2"/><text x="162.5" y="46" fill="#ef4444" font-size="9" text-anchor="middle">H2O2 Reduced</text><text x="110" y="18" fill="#f59e0b" font-size="8.5" text-anchor="middle">Ascorbic Acid Block</text></svg>`,
+    options: [
+      { text: "Ascorbic acid ជាសារធាតុ Reducing agent ដែលដកស្រង់ H2O2 រារាំងប្រតិកម្មអុកស៊ីតកម្មពណ៌លើ reagent pad", isCorrect: true },
+      { text: "Ascorbic acid បំផ្លាញរចនាសម្ព័ន្ធម៉ូលេគុល Glucose ឱ្យក្លាយទៅជា Urea ក្នុងប្លោកនោម", isCorrect: false },
+      { text: "Ascorbic acid ធ្វើឱ្យ pH ទឹកនោមឡើងបាសខ្លាំងរហូតដល់បន្ទះតេស្តខូចគុណភាព", isCorrect: false },
+      { text: "Ascorbic acid ជំរុញឱ្យបំពង់ទុបុយឡាតម្រងនោមស្រូបយកជាតិស្ករមកវិញ ១០០%", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 4 (Ascorbic Acid Interference)៖ បន្ទះតេស្តគ្លុយកូស និងឈាមពឹងផ្អែកលើប្រតិកម្ម Glucose oxidase-peroxidase chromogen reaction។ Ascorbic acid (Vitamin C) ជា Reducing agent ដ៏ខ្លាំងដែលចូលទៅប្រកួតប្រជែងចាប់យក H2O2 មុនពេលវាអាចធ្វើអុកស៊ីតកម្មលើ Chromogen បណ្តាលឱ្យកើតលទ្ធផល False-negative លើ Glucose, Blood, Bilirubin និង Nitrite។"
+  },
+  {
+    topic: "Urine Chemistry — Protein Error of Indicators [Analyze]",
+    title: "អ្នកជំងឺម្នាក់មានជំងឺ Multiple Myeloma បញ្ចេញប្រូតេអ៊ីន Bence Jones (Immunoglobulin light chains) យ៉ាងច្រើនក្នុងទឹកនោម ប៉ុន្តែបន្ទះ Dipstick បង្ហាញ Protein: Negative។ តើមូលហេតុបច្ចេកទេសអ្វីដែលធ្វើឱ្យបន្ទះ Dipstick ខកខានមិនអាចចាប់ប្រូតេអ៊ីននេះបាន?",
+    hint: "បន្ទះ Dipstick ប្រើគោលការណ៍ 'Protein error of indicators' ដែលមានភាពឆ្លើយតបខ្ពស់ចំពោះតែ Albumin ប៉ុណ្ណោះ។",
+    options: [
+      { text: "គោលការណ៍ 'Protein error of indicators' លើបន្ទះ Dipstick មានប្រតិកម្មរំញោចចម្បងតែចំពោះ Albumin ប៉ុណ្ណោះ", isCorrect: true },
+      { text: "ប្រូតេអ៊ីន Bence Jones មិនមានម៉ូលេគុលអាស៊ីតអាមីណូនៅក្នុងរចនាសម្ព័ន្ធរបស់វាឡើយ", isCorrect: false },
+      { text: "ប្រូតេអ៊ីន Bence Jones ត្រូវបានបំប្លែងទៅជាជាតិស្ករ Glucose ភ្លាមៗពេលឆ្លងកាត់តម្រង", isCorrect: false },
+      { text: "បន្ទះ Dipstick ត្រូវផុតកំណត់កាលបរិច្ឆេទប្រើប្រាស់តាំងពីមុនពេលបើកប្រអប់", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 4 (Protein)៖ បន្ទះ Reagent strip កំណត់រកប្រូតេអ៊ីនតាមគោលការណ៍ 'Protein error of indicators' (Tetrabromphenol blue នៅ pH 3.0)។ វិធីសាស្ត្រនេះមានភាពរសើបស្ទើរតែទាំងស្រុងចំពោះ Albumin តែមិនសូវឆ្លើយតបនឹង Globulins, Hemoglobin ឬ Bence Jones proteins ឡើយ។ ករណីសង្ស័យ Multiple Myeloma ត្រូវបញ្ជាក់ដោយ Sulfosalicylic Acid (SSA) precipitation test ឬ Protein electrophoresis។"
+  },
+  {
+    topic: "Urine Chemistry — Biliary Obstruction vs Hemolysis [Evaluate]",
+    title: "អ្នកជំងឺម្នាក់មានស្បែកឡើងលឿង (Jaundice)។ ពិនិត្យទឹកនោមដោយបន្ទះ Dipstick បង្ហាញលទ្ធផល៖ Bilirubin: Positive (+++) និង Urobilinogen: Normal/Absent (0.2 mg/dL)។ ផ្អែកលើមេតាប៉ូលីសថ្លើម និងប្រមាត់ តើអ្នកជំងឺនេះមានជំងឺអ្វី?",
+    hint: "ទឹកប្រមាត់ស្ទះមិនអាចហូរចូលពោះវៀន (គ្មាន Urobilinogen) ប៉ុន្តែ Conjugated Bilirubin ធ្លាយចូលឈាមទៅទឹកនោម។",
+    options: [
+      { text: "ការស្ទះផ្លូវទឹកប្រមាត់ (Biliary obstruction ដូចជា គ្រួសស្ទះបំពង់ប្រមាត់ ឬមហារីកក្បាលលំពែង)", isCorrect: true },
+      { text: "ជំងឺបែកគ្រាប់ឈាមក្រហមស្រួចស្រាវ (Hemolytic anemia ដូចជា G6PD crisis)", isCorrect: false },
+      { text: "ជំងឺរលាកប្លោកនោមដោយសារបាក់តេរី E. coli ធម្មតា", isCorrect: false },
+      { text: "ជំងឺខ្វះជាតិទឹកធ្ងន់ធ្ងរដោយសារការហាត់ប្រាណកម្លាំងបាយយូរម៉ោង", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយ Lesson 4 (Bilirubin & Urobilinogen)៖ ក្នុង Obstructive jaundice (ការស្ទះផ្លូវទឹកប្រមាត់) Conjugated bilirubin មិនអាចហូរចូលពោះវៀនដើម្បីបំប្លែងជា Urobilinogen បានឡើយ ដូច្នេះ Urobilinogen ក្នុងទឹកនោមនឹងថយចុះ ឬអវត្តមាន (Decreased/Absent)។ ផ្ទុយទៅវិញ Conjugated bilirubin ក្នុងឈាមកើនឡើងខ្ពស់ ហើយធ្លាយច្រោះចូលក្នុងទឹកនោម (Urine Bilirubin +++)។ បើ Hemolytic anemia នោះ Urobilinogen នឹងឡើងខ្ពស់ខ្លាំង តែ Urine bilirubin អវិជ្ជមាន។"
+  },
+  {
+    topic: "Urine Chemistry — Blood Pad vs Microscopic Discrepancy [Analyze]",
+    title: "លទ្ធផលពិនិត្យទឹកនោមបន្ទាន់បង្ហាញ៖ បន្ទះ Dipstick ចេញ Blood: Large (+++, Uniform green) ប៉ុន្តែការពិនិត្យកករទឹកនោមក្រោមមីក្រូទស្សន៍ឃើញ RBC = 0-1 /HPF (គ្មានគ្រាប់ឈាមក្រហមឡើយ)។ តើមូលហេតុវេជ្ជសាស្ត្រណាដែលសមស្របបំផុត?",
+    hint: "ពណ៌បៃតងរលោងស្មើ (Uniform) ដោយគ្មាន RBCs បញ្ជាក់ពី Hemoglobinuria (បែកគ្រាប់ឈាម) ឬ Myoglobinuria (រលួយសាច់ដុំ Rhabdomyolysis)។",
+    options: [
+      { text: "វត្តមាន Myoglobin (ពីរលួយសាច់ដុំ Rhabdomyolysis) ឬ Free Hemoglobin (ពីការបែកគ្រាប់ឈាម Intravascular Hemolysis)", isCorrect: true },
+      { text: "វត្តមានគ្រួសកាល់ស្យូមអុកសាឡាតធំៗដែលកោសដាច់ជញ្ជាំងប្លោកនោម", isCorrect: false },
+      { text: "ការប្រឡាក់មេរោគផ្សិត Candida albicans ពីតំបន់ប្រដាប់ភេទខាងក្រៅ", isCorrect: false },
+      { text: "អ្នកជំងឺបានទទួលទានទឹកក្រូចឆ្មារច្រើនពេកធ្វើឱ្យបាត់បង់គ្រាប់ឈាមក្រហម", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀន Lesson 4 (Blood / RBCs) ចែងថា៖ បន្ទះ Dipstick ចាប់យក Peroxidase activity។ បើជា Intact RBCs វានឹងចេញស្នាមចុចៗ (Speckled pattern)។ បើចេញពណ៌បៃតងរលោងស្មើ (Uniform color change) ដោយពិនិត្យមីក្រូទស្សន៍មិនឃើញ RBCs នោះទេ វាបញ្ជាក់ពី Free Hemoglobin (Intravascular hemolysis / Transfusion reaction) ឬ Myoglobin (Rhabdomyolysis / Muscle trauma)។"
+  },
+  {
+    topic: "Urine Chemistry — Nitrite Test Requirements & False Negatives [Evaluate]",
+    title: "អ្នកជំងឺម្នាក់មានរោគសញ្ញារលាកប្លោកនោមច្បាស់ក្រឡែត (Dysuria, Frequency)។ ការពិនិត្យទឹកនោមចៃដន្យពេលរសៀល (Random urine) បង្ហាញ Leukocyte Esterase: Positive (++) តែ Nitrite: Negative។ តើកត្តាណាខ្លះដែលបណ្តាលឱ្យ Nitrite អវិជ្ជមានទាំងដែលមានការឆ្លងមេរោគ?",
+    hint: "ទឹកនោមមិនបានស្តុកទុកក្នុងប្លោកនោមគ្រប់ ៤-៦ ម៉ោង ឬបាក់តេរីមិនចេះកាត់បន្ថយ Nitrate (ដូចជា Enterococcus)។",
+    options: [
+      { text: "ទឹកនោមនៅក្នុងប្លោកនោមមិនគ្រប់ 4-6 ម៉ោង ឬមេរោគបង្កជាពួក Gram-positive (គ្មាន Nitrate reductase)", isCorrect: true },
+      { text: "មេរោគបង្កជាបាក់តេរី E. coli ដែលផលិតអង់ស៊ីម Nitrate reductase ខ្លាំងពេក", isCorrect: false },
+      { text: "អ្នកជំងឺបានតមអាហារសាច់ ធ្វើឱ្យបាត់បង់សារធាតុ Nitrite ពីសរសៃឈាម", isCorrect: false },
+      { text: "បន្ទះ Dipstick ត្រូវបានជ្រលក់ក្នុងទឹកនោមយូរពេកលើសពី ១០ វិនាទី", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយ Lesson 4 (Nitrite Limitations)៖ លទ្ធផល Nitrite False-negative កើតឡើងនៅពេល៖ 1. ទឹកនោមមិនបាននៅក្នុងប្លោកនោមយូរគ្រប់គ្រាន់ (ទាមទារ 4-6 ម៉ោងដើម្បីឱ្យបាក់តេរីបំប្លែង Nitrate ទៅជា Nitrite), 2. បាក់តេរីបង្កហេតុមិនមែនជា Nitrate-reducing bacteria (ដូចជា Enterococcus faecalis, S. saprophyticus), 3. វត្តមាន Vitamin C ខ្ពស់, ឬ 4. កង្វះសារធាតុ Nitrate ក្នុងចំណីអាហារ។"
+  },
+  {
+    topic: "Urine Sediment — Dysmorphic RBCs & Glomerular Bleeding [Analyze]",
+    title: "ក្រោមមីក្រូទស្សន៍ Phase-Contrast លើកករទឹកនោមរបស់អ្នកជំងឺនោមឈាម អ្នកបច្ចេកទេសប្រទះឃើញកោសិកាឈាមក្រហមជាង ៨០% មានរាងមិនស្មើគ្នា មានពកដូចបំពកត្រចៀក ឬរាង Acanthocytes (Dysmorphic RBCs)។ តើនេះជាសញ្ញាបញ្ជាក់ពីទីតាំងហូរឈាមនៅត្រង់ណា?",
+    hint: "Dysmorphic RBCs កើតឡើងពីការកកិតឆ្លងកាត់ Glomerular basement membrane បញ្ជាក់ពី Glomerular bleeding។",
+    svg: `<svg width="220" height="85" viewBox="0 0 220 85"><circle cx="60" cy="42" r="18" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><circle cx="60" cy="42" r="7" fill="#0b1120"/><text x="60" y="78" fill="#94a3b8" font-size="8" text-anchor="middle">Isomorphic (Lower tract)</text><path d="M 145,35 Q 160,20 170,35 Q 185,42 175,55 Q 160,65 148,52 Z" fill="#ef4444"/><circle cx="170" cy="32" r="4" fill="#ef4444"/><text x="160" y="78" fill="#ef4444" font-size="8" text-anchor="middle">Dysmorphic (Glomerular)</text></svg>`,
+    options: [
+      { text: "ការហូរឈាមចេញពីកម្រិតតម្រង Glomerulus នៃតម្រងនោម (Glomerular disease ដូចជា Glomerulonephritis)", isCorrect: true },
+      { text: "ការហូរឈាមចេញពីផ្លូវបង្ហូរនោមខាងក្រោមដោយសារគ្រួសប្លោកនោម ឬមហារីកបង្ហួរនោម", isCorrect: false },
+      { text: "ការប្រឡាក់ឈាមរដូវរបស់ស្ត្រីចូលក្នុងកំប៉ុងទឹកនោមពេលកំពុងត្រង", isCorrect: false },
+      { text: "ការខូចខាតកោសិកាឈាមក្រហមដោយសារការបង្វិលម៉ាស៊ីន Centrifuge លឿនពេក", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 5 (Table 4 Interpretation of urine microscopy findings)៖ កោសិកាឈាមក្រហមដែលមានរូបរាងខូចទ្រង់ទ្រាយ (Dysmorphic red cells / Acanthocytic RBCs) កើតឡើងដោយសារសម្ពាធ Osmotic និងការកកិតរុញច្រានកាត់តាមជញ្ជាំងតម្រង Glomerular basement membrane ដែលរងការរលាក។ វត្តមាន Dysmorphic RBCs >80% បញ្ជាក់ពី Glomerular bleeding ចំណែក Isomorphic (Normal round RBCs) បញ្ជាក់ពី Non-glomerular bleeding (គ្រួស ឬដុំសាច់ផ្លូវនោមក្រោម)។"
+  },
+  {
+    topic: "Urine Sediment — Muddy Brown Granular Casts [Evaluate]",
+    title: "អ្នកជំងឺសន្លប់ម្នាក់មានសម្ពាធឈាមធ្លាក់ចុះខ្លាំង (Hypovolemic Shock) បណ្តាលឱ្យខូចតម្រងនោមស្រួចស្រាវ (Acute Kidney Injury)។ លើគំនាសកករទឹកនោម ពិនិត្យឃើញមាន 'Muddy brown casts' ជាច្រើន។ តើស៊ីឡាំងនេះផ្សំឡើងពីកោសិកាណា ហើយបញ្ជាក់ពីជំងឺអ្វី?",
+    hint: "Necrotic renal tubular epithelial cells បញ្ជាក់ច្បាស់ពី Acute Tubular Necrosis (ATN)។",
+    options: [
+      { text: "Necrotic Renal Tubular Epithelial cells កកផ្តុំគ្នា បញ្ជាក់ពីជំងឺ Acute Tubular Necrosis (ATN)", isCorrect: true },
+      { text: "Neutrophils កកផ្តុំគ្នា បញ្ជាក់ពីជំងឺរលាកតម្រងនោម Acute Pyelonephritis", isCorrect: false },
+      { text: "កោសិកា Squamous epithelial cells បញ្ជាក់ពីការប្រឡាក់មេរោគពីទ្វារមាស", isCorrect: false },
+      { text: "កកកុញនៃគ្រីស្តាល់ Uric acid បញ្ជាក់ពីជំងឺរលាកសន្លាក់ហ្គោដកម្រិតធ្ងន់", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 5 (Table 4)៖ 'Muddy brown cast' គឺជាស៊ីឡាំងក្រានុលក្រមៅពិសេស ដែលផ្សំឡើងពីកោសិកាកោសិកាបំពង់តម្រងនោមដែលងាប់រលួយ (Necrotic tubular cells aggregated with Tamm-Horsfall protein)។ វត្តមានស៊ីឡាំងនេះគឺជា Pathognomonic marker នៃជំងឺស្លាប់កោសិកាបំពង់តម្រងនោមស្រួចស្រាវ Acute Tubular Necrosis (ATN) ដែលបណ្តាលមកពីកង្វះឈាមហូរទៅតម្រងនោម (Ischemia) ឬជាតិពុល Nephrotoxins។"
+  },
+  {
+    topic: "Urine Sediment — Centrifugation Quality Standards [Apply]",
+    title: "យោងតាមគោលការណ៍ស្តង់ដារ CLSI ក្នុងការរៀបចំពិនិត្យកករទឹកនោម (Urine Sediment Preparation) តើបរិមាណទឹកនោម កម្លាំងបង្វិល Centrifuge និងបរិមាណកករដែលត្រូវរក្សាទុកត្រូវបានកំណត់យ៉ាងដូចម្តេច?",
+    hint: "ទឹកនោម 10-15 mL, បង្វិល 400-450g រយៈពេល 5 នាទី, បន្សល់កករ 0.5-1.0 mL។",
+    options: [
+      { text: "ប្រើទឹកនោម 10–15 mL, បង្វិលកម្លាំង 400–450 g រយៈពេល 5 នាទី, ហើយបន្សល់កករ 0.5–1.0 mL សម្រាប់ពិនិត្យ", isCorrect: true },
+      { text: "ប្រើទឹកនោម 2 mL, បង្វិលកម្លាំង 10,000 g រយៈពេល ៣០ វិនាទី, ហើយបន្សល់កករ 5 mL", isCorrect: false },
+      { text: "ប្រើទឹកនោម 50 mL, បង្វិលកម្លាំង 50 g រយៈពេល ១ ម៉ោងពេញ, ហើយចាក់ទឹកចេញឱ្យអស់គ្មានសល់", isCorrect: false },
+      { text: "ប្រើតែទឹកនោមដែលមិនបានបង្វិល Centrifuge មកស្រក់លើស្លាយដោយផ្ទាល់", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយ Lesson 5 (Standard of Sample Preparation & Centrifugation)៖ ស្តង់ដារ CLSI តម្រូវឱ្យ៖ 1. បរិមាណសំណាក 10-15 mL ក្នុងបំពង់កោណ, 2. បង្វិលក្នុងកម្លាំង 400-450 g (ប្រហែល 1500-2000 rpm អាស្រ័យលើកាំ Rotor) រយៈពេល 5 នាទី (បង្វិលខ្លាំងពេកធ្វើឱ្យបែកកោសិកា បង្វិលខ្សោយពេកមិនធ្លាក់កករ), 3. ចាក់ទឹកខាងលើចោលដោយបន្សល់ទឹករំលាយកករ 0.5-1.0 mL រួចអង្រួនឱ្យសព្វមុនស្រក់ ២០ µL លើស្លាយ។"
+  },
+  {
+    topic: "Urine Sediment — Triple Phosphate Crystals in Alkaline Urine [Analyze]",
+    title: "លើកករទឹកនោមរបស់អ្នកជំងឺឆ្លងមេរោគផ្លូវនោមរ៉ាំរ៉ៃ (pH = 8.5) អ្នកបច្ចេកទេសសង្កេតឃើញគ្រីស្តាល់រាងដូចគម្របក្តារមឈូស (Prism / 'Coffin-lid' appearance)។ តើគ្រីស្តាល់នេះជាប្រភេទអ្វី?",
+    hint: "Triple phosphate (Magnesium ammonium phosphate) រាងក្តារមឈូស (Coffin-lid) ឃើញតែក្នុងទឹកនោមបាស។",
+    svg: `<svg width="220" height="85" viewBox="0 0 220 85"><rect x="65" y="22" width="90" height="42" rx="4" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><line x1="85" y1="22" x2="85" y2="64" stroke="#94a3b8" stroke-width="1.5"/><line x1="135" y1="22" x2="135" y2="64" stroke="#94a3b8" stroke-width="1.5"/><line x1="65" y1="22" x2="85" y2="43" stroke="#f59e0b" stroke-width="1.5"/><line x1="65" y1="64" x2="85" y2="43" stroke="#f59e0b" stroke-width="1.5"/><line x1="155" y1="22" x2="135" y2="43" stroke="#f59e0b" stroke-width="1.5"/><line x1="155" y1="64" x2="135" y2="43" stroke="#f59e0b" stroke-width="1.5"/><line x1="85" y1="43" x2="135" y2="43" stroke="#f59e0b" stroke-width="1.5"/><text x="110" y="78" fill="#f8fafc" font-size="8" text-anchor="middle">Coffin-Lid (Triple Phosphate / Struvite)</text></svg>`,
+    options: [
+      { text: "Triple phosphate (Magnesium ammonium phosphate / Struvite) រាងគម្របក្តារមឈូស ក្នុងទឹកនោមបាស", isCorrect: true },
+      { text: "Uric acid crystal រាងចានសំប៉ែត ឬពេជ្រ ក្នុងទឹកនោមអាស៊ីតខ្លាំង", isCorrect: false },
+      { text: "Cystine crystal រាងឆកោន ៦ ជ្រុងស្មើ បញ្ជាក់ពីជំងឺតំណពូជ", isCorrect: false },
+      { text: "Bilirubin crystal រាងម្ជុលពណ៌លឿងដិតក្នុងជំងឺស្ទះផ្លូវទឹកប្រមាត់", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 5 (Crystals)៖ គ្រីស្តាល់ Triple phosphate (Magnesium ammonium phosphate ឬ Struvite) មានរាងចតុកោណទ្រវែងដូចគម្របក្តារមឈូស (Coffin-lid) ឬរាងព្រីស។ ពួកវាកកើតឡើងតែនៅក្នុងទឹកនោមដែលមាន pH អាល់កាឡាំង (បាស pH > 7.0) ជាពិសេសក្នុងករណីមានការឆ្លងបាក់តេរីបំបែក Urea ដូចជា Proteus mirabilis ដែលអាចបង្កើតជាគ្រួស Struvite/Staghorn calculi។"
+  },
+  {
+    topic: "Urine Sediment — Yeast vs Red Blood Cells Differentiation [Evaluate]",
+    title: "ក្រោមមីក្រូទស្សន៍ពន្លឺធម្មតា កោសិកាមេដំបែ Yeast cells (Candida) និងកោសិកាឈាមក្រហម RBCs អាចមានទំហំនិងរាងមូលស្រដៀងគ្នា។ តើវិធីសាស្ត្រគីមីសាមញ្ញណាដែលអ្នកបច្ចេកទេសអាចប្រើនៅលើស្លាយដើម្បីរំលាយ RBCs បន្សល់ទុកតែ Yeast?",
+    hint: "បន្ថែមអាស៊ីតអាសេទិក ២% (Acetic acid) ចូលលើកករ៖ RBCs នឹងរលាយបែក (Lysis) រីឯ Yeast នៅដដែល។",
+    options: [
+      { text: "បន្ថែមអាស៊ីតអាសេទិក 2% (2% Acetic acid) មួយតំណក់ វានឹងរំលាយ RBCs ឱ្យបែកអស់ បន្សល់ទុកតែ Yeast cells", isCorrect: true },
+      { text: "យកស្លាយទៅដុតលើអណ្តាតភ្លើងចង្កៀងអាល់កុលដើម្បីឱ្យកោសិកា Yeast ផ្ទុះបែក", isCorrect: false },
+      { text: "បន្ថែមសូលុយស្យុងស្ករគ្លុយកូសដើម្បីឱ្យគ្រាប់ឈាមក្រហមរីកមាឌទ្វេដង", isCorrect: false },
+      { text: "ប្រើប្រាស់ទឹកដោះគោជូរលាយលើកញ្ចក់ឡាមដើម្បីបំបែកជញ្ជាំងកោសិកា", isCorrect: false }
+    ],
+    rationale: "កោសិកា RBCs ងាយច្រឡំជាមួយ Yeast cells (Candida)។ វិធីសាស្ត្រមន្ទីរពិសោធន៍ស្តង់ដារគឺការបន្ថែម 2% Acetic acid មួយតំណក់លើកករ៖ អាស៊ីតអាសេទិកនឹងធ្វើឱ្យកោសិកាឈាមក្រហមបែកធ្លាយ (Lysis) ភ្លាមៗ ខណៈដែល Yeast cells មានជញ្ជាំងកោសិកា chitinous cell wall រឹងមាំ មិនរលាយឡើយ។ ម្យ៉ាងទៀត Yeast តែងតែបង្ហាញទម្រង់ពន្លក (Budding) ឬសរសៃ Pseudohyphae។"
+  },
+  {
+    topic: "CSF Analysis — Traumatic Tap vs Subarachnoid Hemorrhage [Evaluate]",
+    title: "ការចោះយកទឹកខួរឆ្អឹងខ្នង (Luminary Puncture) ឃើញមានឈាមក្រហមច្រាល។ ក្រោយបង្វិល Centrifuge ឃើញទឹកខាងលើ (Supernatant) ឡើងពណ៌លឿងស្រាល Xanthochromia ហើយបរិមាណគ្រាប់ឈាមក្រហមក្នុង Tube 1 និង Tube 3 នៅថេរស្មើគ្នា។ តើការបកស្រាយណាត្រឹមត្រូវ?",
+    hint: "Xanthochromia + ចំនួន RBC ថេរក្នុងគ្រប់បំពង់ = Subarachnoid Hemorrhage (SAH) ពិតប្រាកដ (មិនមែន Traumatic Tap ទេ)។",
+    options: [
+      { text: "ការដាច់សរសៃឈាមក្នុងស្រទាប់ខួរក្បាលពិតប្រាកដ (Subarachnoid Hemorrhage / SAH)", isCorrect: true },
+      { text: "ការចោះប៉ះសរសៃឈាមចៃដន្យពេលចាក់ម្ជុល (Traumatic Lumbar Puncture)", isCorrect: false },
+      { text: "ការឆ្លងមេរោគបាក់តេរីរលាកស្រោមខួរក្បាលស្រួចស្រាវ (Acute Bacterial Meningitis)", isCorrect: false },
+      { text: "ជាលក្ខណៈធម្មតារបស់ទឹកខួរឆ្អឹងខ្នងមនុស្សចាស់ដែលមានអាយុលើសពី ៥០ ឆ្នាំ", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 6 (CSF Collection & Examination)៖ ដើម្បីបែងចែករវាង Traumatic tap និង Subarachnoid Hemorrhage (SAH)៖ ក្នុង Traumatic tap ឈាមនឹងស្រាលទៅៗពី Tube 1 ទៅ Tube 3/4 ហើយ supernatant គ្មានពណ៌ (Clear) ក្រោយ centrifuge ភ្លាមៗ។ ផ្ទុយទៅវិញ ក្នុង SAH ការហូរឈាមកើតឡើងយូរម៉ោង (>2-4h) ធ្វើឱ្យ RBCs បែកបញ្ចេញ Oxyhemoglobin/Bilirubin បង្កើតបានជាពណ៌លឿង Xanthochromia ព្រមទាំងចំនួន RBCs ថេរស្មើគ្នាក្នុងគ្រប់បំពង់ទាំងអស់។"
+  },
+  {
+    topic: "CSF Differential — Bacterial vs Viral/Tuberculous Meningitis [Analyze]",
+    title: "លទ្ធផលពិនិត្យទឹកខួរឆ្អឹងខ្នង (CSF) របស់អ្នកជំងឺរលាកស្រោមខួរស្រួចស្រាវម្នាក់បង្ហាញ៖ ទឹកនោមថ្លាព្រិលដូចទឹកបាយ (Turbid), កោសិកាឈាមស WBC = 2,500 /µL (Neutrophils 90%), Protein = 180 mg/dL (ឡើងខ្ពស់ខ្លាំង), និង Glucose = 20 mg/dL (ធ្លាក់ចុះខ្លាំង ស្មើនឹង ២០% នៃជាតិស្ករក្នុងឈាម)។ តើអ្នកជំងឺនេះមានជំងឺអ្វី?",
+    hint: "Neutrophils ខ្ពស់ + Protein ឡើងខ្ពស់ + Glucose ធ្លាក់ចុះខ្លាំង = Acute Bacterial Meningitis។",
+    options: [
+      { text: "រលាកស្រោមខួរក្បាលដោយសារបាក់តេរីស្រួចស្រាវ (Acute Bacterial Meningitis)", isCorrect: true },
+      { text: "រលាកស្រោមខួរក្បាលដោយសារវីរុសធម្មតា (Aseptic / Viral Meningitis)", isCorrect: false },
+      { text: "ជំងឺក្រិនសរសៃប្រសាទកណ្តាល Multiple Sclerosis", isCorrect: false },
+      { text: "ការហូរឈាមក្នុងស្រទាប់ខួរក្បាល Subarachnoid Hemorrhage", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀន Lesson 6 (CSF Normal vs Pathological) ចែងច្បាស់ថា៖ ក្នុង Bacterial meningitis ទឹក CSF ឡើងព្រិល (Turbid), កោសិកាឈាមស Neutrophils កើនឡើងលើសលប់ (>80%), Protein ឡើងខ្ពស់ខ្លាំង (ដោយសារខូច Blood-Brain Barrier), និង Glucose ធ្លាក់ចុះទាបខ្លាំង (<40% នៃ plasma glucose) ដោយសារបាក់តេរីនិង leukocytes ស៊ីគ្លុយកូស។ ចំណែក Viral meningitis សំបូរ Lymphocytes ហើយ Glucose ធម្មតា។"
+  },
+  {
+    topic: "CSF Tube Distribution — Tube Sequencing Protocol [Apply]",
+    title: "យោងតាមពិធីសារប្រមូលសំណាក CSF ដោយ Lumbar Puncture តើបំពង់ Tube ទី ២ និង Tube ទី ៣ ត្រូវបានបម្រុងទុកសម្រាប់ការធ្វើតេស្តផ្នែកណាខ្លះនៅក្នុងមន្ទីរពិសោធន៍?",
+    hint: "Tube 1: Chemistry; Tube 2: Microbiology; Tube 3: Hematology (Cell count); Tube 4: Special tests។",
+    options: [
+      { text: "Tube 2 សម្រាប់ផ្នែក Microbiology (Gram stain & Culture) និង Tube 3 សម្រាប់ផ្នែក Hematology (Cell count & Differential)", isCorrect: true },
+      { text: "Tube 2 សម្រាប់ផ្នែកបោកគក់ និង Tube 3 សម្រាប់ចាក់បញ្ចូលទៅក្នុងសរសៃឈាមវិញ", isCorrect: false },
+      { text: "Tube 2 សម្រាប់វាស់ជាតិស្ករ Glucose និង Tube 3 សម្រាប់វាស់ដង់ស៊ីតេទឹកនោម", isCorrect: false },
+      { text: "បំពង់ទាំងអស់ត្រូវយកទៅបណ្តុះមេរោគដំណាលគ្នាក្នុងលក្ខខណ្ឌដូចគ្នាទាំងស្រុង", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 6 (CSF Collection)៖ បំពង់ CSF ទាំង ៤ ត្រូវបែងចែកតាមលំដាប់លំដោយ៖ Tube 1 សម្រាប់ Chemistry & Serology; Tube 2 សម្រាប់ Microbiology (ដើម្បីរក្សាភាព aseptic); Tube 3 សម្រាប់ Hematology (Cell count & Differential — ដាក់នៅបំពង់ទី ៣ ដើម្បីជៀសវាងការរំខានដោយ Traumatic tap RBCs ពេលទើបចាក់ម្ជុល); និង Tube 4 សម្រាប់តេស្តពិសេសបន្ថែម (Cytology, PCR)។"
+  },
+  {
+    topic: "Synovial Fluid — Gout Polarized Light Microscopy [Analyze]",
+    title: "ការបូមទឹកសន្លាក់ជង្គង់ (Arthrocentesis) របស់អ្នកជំងឺរលាកសន្លាក់ស្រួចស្រាវ ត្រូវបានពិនិត្យក្រោមមីក្រូទស្សន៍ពន្លឺប៉ូលែរ (Compensated Polarized Light) ឃើញមានគ្រីស្តាល់រាងម្ជុលស្រួចៗ (Needle-shaped crystals) ដែលបញ្ចេញពន្លឺពណ៌លឿងស្របនឹងអ័ក្សយឺត (Negative Birefringence)។ តើគ្រីស្តាល់នេះជាអ្វី ហើយបញ្ជាក់ពីជំងឺអ្វី?",
+    hint: "Monosodium Urate (MSU) រាងម្ជុល បញ្ចេញពន្លឺ Negative birefringence ក្នុងជំងឺរលាកសន្លាក់ហ្គោដ (Gout)។",
+    svg: `<svg width="220" height="85" viewBox="0 0 220 85"><rect x="30" y="15" width="160" height="55" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><line x1="60" y1="52" x2="160" y2="32" stroke="#f59e0b" stroke-width="3"/><polygon points="160,32 153,29 154,35" fill="#f59e0b"/><polygon points="60,52 67,49 66,55" fill="#f59e0b"/><text x="110" y="65" fill="#f59e0b" font-size="8.5" text-anchor="middle">Needle-shaped MSU Crystal (Gout)</text></svg>`,
+    options: [
+      { text: "Monosodium Urate (MSU) ក្នុងជំងឺហ្គោដ (Gout) ដែលបញ្ចេញពន្លឺ Negative Birefringence (ពណ៌លឿងស្របអ័ក្ស)", isCorrect: true },
+      { text: "Calcium Pyrophosphate Dihydrate (CPPD) ក្នុងជំងឺ Pseudogout ដែលមានរាងចតុកោណ Rhomboid", isCorrect: false },
+      { text: "គ្រីស្តាល់ Cholesterol esters ក្នុងជំងឺរលាកសន្លាក់រ៉ាំរ៉ៃ Rheumatoid Arthritis", isCorrect: false },
+      { text: "កម្ទេចឆ្អឹងខ្ចីដែលរបកចេញដោយសារគ្រោះថ្នាក់ចរាចរណ៍បាក់ឆ្អឹងជង្គង់", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 6 (Synovial Fluid Pathology)៖ គ្រីស្តាល់ Monosodium Urate (MSU) ក្នុងជំងឺ Gout មានរាងដូចម្ជុលស្រួចៗ (Needle-shaped) ហើយនៅក្រោម Compensated Polarized Light វាបង្ហាញលក្ខណៈ 'Strong negative birefringence' (បញ្ចេញពណ៌លឿងភ្លឺនៅពេលស្របនឹងអ័ក្ស Compensator filter)។ បើ Pseudogout (CPPD) គ្រីស្តាល់ជារាង Rhomboid និងបង្ហាញ Weak positive birefringence (ពណ៌ខៀវស្របអ័ក្ស)។"
+  },
+  {
+    topic: "Amniotic Fluid — Neural Tube Defects vs Hemolytic Disease [Understand]",
+    title: "យោងតាមមេរៀន Lesson 6 តើការវាស់កម្រិត Alpha-fetoprotein (AFP) ក្នុងទឹកភ្លោះ (Amniotic fluid) ត្រូវបានប្រើប្រាស់ជាចម្បងក្នុងការធ្វើរោគវិនិច្ឆ័យពិការភាពគភ៌មួយណា?",
+    hint: "AFP ឡើងខ្ពស់ក្នុងពិការភាពបំពង់ប្រសាទគភ៌ (Neural Tube Defects ដូចជា Spina bifida, Anencephaly)។",
+    options: [
+      { text: "ពិការភាពបំពង់ប្រសាទពីកំណើតរបស់គភ៌ (Neural Tube Defects ដូចជា Spina bifida និង Anencephaly)", isCorrect: true },
+      { text: "ជំងឺខ្វះជាតិដែកក្នុងខួរឆ្អឹងរបស់ម្តាយអំឡុងពេលពពោះ", isCorrect: false },
+      { text: "ការវាយតម្លៃលើភាពទុំនៃសួតរបស់ទារក (Fetal lung maturity)", isCorrect: false },
+      { text: "ការកំណត់រកវត្តមានមេរោគគ្រុនចាញ់ដែលឆ្លងកាត់ទងសុក", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀន Lesson 6 (Amniotic Fluid – Laboratory Tests) បញ្ជាក់ថា៖ តេស្តសំខាន់ៗលើទឹកភ្លោះរួមមាន៖ 1. Alpha-fetoprotein (AFP) សម្រាប់ស្រាវជ្រាវរក Neural Tube Defects (Spina bifida, Anencephaly) ឬ Gastroschisis, 2. Bilirubin (ΔA450) សម្រាប់វាយតម្លៃ Hemolytic Disease of the Fetus and Newborn (HDFN), និង 3. L/S ratio និង Lamellar bodies សម្រាប់វាយតម្លៃ Fetal Lung Maturity។"
+  },
+  {
+    topic: "Serous Fluids — Transudate vs Exudate Pathophysiology [Analyze]",
+    title: "តើអ្វីជាភាពខុសគ្នានៃយន្តការរោគសរីរវិទ្យា (Pathophysiological mechanism) រវាងការកកើតទឹកបែប Transudate និងទឹកបែប Exudate ក្នុងប្រហោងសេរ៉ូស (Serous cavities)?",
+    hint: "Transudate កើតពីអតុល្យភាពសម្ពាធ Hydrostatic/Oncotic (Systemic); Exudate កើតពីការកើនឡើង Permeability នៃសរសៃឈាម (Local inflammation)។",
+    options: [
+      { text: "Transudate កើតពីអតុល្យភាពសម្ពាធ Systemic (Hydrostatic ឡើង ឬ Oncotic ចុះ) រីឯ Exudate កើតពីការរលាកបង្កើន Permeability សរសៃឈាម", isCorrect: true },
+      { text: "Transudate កើតឡើងតែពេលមានការឆ្លងមេរោគបាក់តេរី រីឯ Exudate កើតឡើងពេលខ្សោយបេះដូង", isCorrect: false },
+      { text: "Transudate មានផ្ទុកកោសិកាឈាមសច្រើនជាង ១០ ម៉ឺនកោសិកា រីឯ Exudate គ្មានកោសិកាសោះ", isCorrect: false },
+      { text: "ដំណើរការទាំងពីរមានយន្តការដូចគ្នាទាំងស្រុងដោយគ្រាន់តែខុសគ្នាលើទីតាំងសរីរាង្គ", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 7 (Transudate vs Exudate)៖ Transudate កកើតឡើងដោយសារកត្តាប្រព័ន្ធ (Systemic causes) ដូចជាការកើនឡើងសម្ពាធ Hydrostatic (Congestive heart failure) ឬការថយចុះសម្ពាធ Oncotic (Cirrhosis, Nephrotic syndrome/Hypoalbuminemia) ដោយគ្មានការរលាកភ្នាសឡើយ។ ផ្ទុយទៅវិញ Exudate កកើតឡើងដោយសារការរលាកក្នុងតំបន់ (Local inflammation, Infection, Malignancy) ដែលបំផ្លាញជញ្ជាំងសរសៃឈាមបង្កើន Vascular permeability ធ្វើឱ្យប្រូតេអ៊ីន និងកោសិកាធ្លាយចូលប្រហោងសេរ៉ូស។"
+  },
+  {
+    topic: "Serous Fluids — Light's Criteria for Exudates [Evaluate]",
+    title: "ការបូមទឹកស្រោមសួត (Pleural fluid) របស់អ្នកជំងឺម្នាក់ ទទួលបានលទ្ធផលជីវគីមី៖ Pleural Fluid Protein / Serum Protein ratio = 0.68 និង Pleural Fluid LDH / Serum LDH ratio = 0.75។ ផ្អែកលើស្តង់ដារ Light's Criteria តើសារធាតុរាវនេះត្រូវចាត់ថ្នាក់ជាអ្វី?",
+    hint: "Fluid/Serum Protein > 0.5 ឬ Fluid/Serum LDH > 0.6 បញ្ជាក់ច្បាស់ថាជា Exudate។",
+    options: [
+      { text: "Exudate (ទឹកកកើតពីការរលាក ឬការឆ្លងមេរោគក្នុងស្រោមសួត ព្រោះ ratio ទាំងពីរលើសពី 0.5 និង 0.6)", isCorrect: true },
+      { text: "Transudate (ទឹកកកើតពីការខ្សោយបេះដូង ឬក្រិនថ្លើម)", isCorrect: false },
+      { text: "ទឹកខួរឆ្អឹងខ្នងដែលច្រឡំបូមធ្លាយចូលក្នុងប្រហោងទ្រូង", isCorrect: false },
+      { text: "ទឹកនោមដែលជ្រាបចូលក្នុងសួតដោយសារការខូចតម្រងនោម", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្តង់ដារវេជ្ជសាស្ត្រ និងស្លាយមេរៀន Lesson 7 (Biochemistry Tests & Case Study)៖ ផ្អែកលើ Light's Criteria សារធាតុរាវចាត់ទុកជា Exudate ប្រសិនបើបំពេញយ៉ាងហោចណាស់លក្ខខណ្ឌមួយក្នុងចំណោម ៣៖ 1. Pleural fluid protein / Serum protein > 0.5, 2. Pleural fluid LDH / Serum LDH > 0.6, 3. Pleural fluid LDH > 2/3 នៃ upper limit ធម្មតានៃ serum LDH។ ទីនេះ Ratio គឺ 0.68 និង 0.75 ដូច្នេះជា Exudate ពិតប្រាកដ។"
+  },
+  {
+    topic: "Pleural Fluid Differential — Tuberculous Pleural Effusion [Analyze]",
+    title: "អ្នកជំងឺក្អកស្លេសរ៉ាំរ៉ៃម្នាក់ត្រូវបានបូមទឹកស្រោមសួត (Thoracentesis) វិភាគកោសិកាឃើញថា៖ កោសិកា Lymphocytes គ្របដណ្តប់រហូតដល់ ៨៥% ជាមួយវត្តមានកោសិកា Mesothelial cells តិចតួចបំផុត (<1%)។ តើជំងឺណាដែលសមស្របបំផុត?",
+    hint: "Lymphocyte predominance (>80%) ជាមួយកង្វះ mesothelial cells បញ្ជាក់ពី Tuberculous Pleurisy (របេងស្រោមសួត)។",
+    options: [
+      { text: "របេងស្រោមសួត (Tuberculous pleurisy / Pleural Tuberculosis)", isCorrect: true },
+      { text: "រលាកស្រោមសួតស្រួចស្រាវដោយសារបាក់តេរី Streptococcus pneumoniae", isCorrect: false },
+      { text: "ការខូចសន្ទះបេះដូងបណ្តាលឱ្យចាល់ឈាម Congestive Heart Failure", isCorrect: false },
+      { text: "ជំងឺអាឡែកស៊ីលំអងផ្កាក្នុងទងសួតកម្រិតស្រាល", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀន Lesson 7 (Differential Cell Count & Quiz ស្លាយ ៣៧) បញ្ជាក់ច្បាស់ថា៖ វត្តមាន Lymphocytes លើសលប់ (>50-80%) ក្នុងទឹកស្រោមសួត គឺជាសញ្ញាសម្គាល់ចម្បងនៃជំងឺរបេងស្រោមសួត (Tuberculosis) ឬដុំសាច់មហារីក (Malignancy)។ ម្យ៉ាងទៀត ក្នុង Tuberculous pleurisy កោសិកា Mesothelial cells តែងតែអវត្តមាន ឬមានតិចជាង 1% ដោយសារស្រទាប់ Fibrin ក្រាស់បិទបាំងជញ្ជាំង Pleura។ បើ Bacterial infection វិញ នឹងសំបូរ Neutrophils។"
+  },
+  {
+    topic: "Peritoneal Fluid — Spontaneous Bacterial Peritonitis (SBP) [Evaluate]",
+    title: "អ្នកជំងឺក្រិនថ្លើមមានទាចទឹក (Ascites) ត្រូវបានចោះបូមទឹកពោះ (Paracentesis)។ ការរាប់កោសិកាបង្ហាញថា ចំនួនកោសិកា Polymorphonuclear Neutrophils (PMN count) ឡើងដល់ 450 /µL (លើសពីកម្រិតកំណត់ 250 /µL)។ តើការធ្វើរោគវិនិច្ឆ័យបន្ទាន់គឺអ្វី?",
+    hint: "Ascitic fluid absolute neutrophil count (ANC) >= 250 /uL បញ្ជាក់ពី Spontaneous Bacterial Peritonitis (SBP)។",
+    options: [
+      { text: "Spontaneous Bacterial Peritonitis (SBP / ការរលាកស្រោមពោះដោយបាក់តេរីដោយឯកឯង ត្រូវព្យាបាលអង់ទីប៊ីយ៉ូទិកបន្ទាន់)", isCorrect: true },
+      { text: "Uncomplicated ascites ដោយសារតែការខ្វះប្រូតេអ៊ីន Albumin ធម្មតា", isCorrect: false },
+      { text: "ការដាច់សរសៃឈាមអាកទែធំក្នុងពោះដែលត្រូវការវះកាត់បើកពោះភ្លាមៗ", isCorrect: false },
+      { text: "ជំងឺរលាកសន្លាក់ហ្គោដរាលដាលដល់ប្រហោងពោះ", isCorrect: false }
+    ],
+    rationale: "ក្នុងវេជ្ជសាស្ត្រ និងការវិភាគ Peritoneal fluid (Paracentesis)៖ លក្ខណៈវិនិច្ឆ័យស្តង់ដារមាសដើម្បីបញ្ជាក់ជំងឺរលាកស្រោមពោះដោយបាក់តេរីដោយឯកឯង Spontaneous Bacterial Peritonitis (SBP) ចំពោះអ្នកជំងឺក្រិនថ្លើម គឺវត្តមាន Absolute Neutrophil Count (ANC) ក្នុងទឹកពោះ >= 250 cells/µL (0.25 x 10^9/L)។ ករណីនេះត្រូវតែចាប់ផ្តើមផ្តល់ថ្នាំអង់ទីប៊ីយ៉ូទិកជាបន្ទាន់ដោយមិនបាច់រង់ចាំលទ្ធផលបណ្តុះមេរោគ Culture ឡើយ។"
+  },
+  {
+    topic: "Serous Fluid Collection — Tube Selection Protocol [Apply]",
+    title: "នៅពេលគ្រូពេទ្យធ្វើការបូមទឹកប្រហោងទ្រូង (Thoracentesis) ឬទឹកពោះ (Paracentesis) ទទួលបានសារធាតុរាវ តើបំពង់ Tube មួយណាដែលត្រូវជ្រើសរើសសម្រាប់ផ្ញើទៅរាប់ចំនួនកោសិកា (Cell count & Differential)?",
+    hint: "បំពង់ K2/K3 EDTA (គម្របពណ៌ស្វាយ) ការពារកុំឱ្យទឹកសេរ៉ូសកក និងរក្សារូបរាងកោសិកា។",
+    options: [
+      { text: "បំពង់ K2/K3 EDTA (គម្របពណ៌ស្វាយ) ដើម្បីការពារកុំឱ្យសារធាតុរាវកក និងរក្សារូបរាងកោសិកាសម្រាប់ការរាប់", isCorrect: true },
+      { text: "បំពង់ Plain tube (គម្របពណ៌ក្រហមគ្មានសារធាតុទប់ឈាម) សម្រាប់រាប់កោសិកា", isCorrect: false },
+      { text: "បំពង់ Sodium Fluoride (គម្របពណ៌ប្រផេះ) សម្រាប់ពិនិត្យកោសិកាឈាមស", isCorrect: false },
+      { text: "ដបកែវគ្មានគម្របដែលលាងជាមួយសាប៊ូទឹកក្តៅរួច", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 7 (Sample Containers ស្លាយ ២៥-២៨)៖ សារធាតុរាវ Serous fluids ត្រូវបែងចែកជា ៣ បំពង់ត្រឹមត្រូវ៖ 1. EDTA tube (Purple top) សម្រាប់ Cell count & Differential (ព្រោះ Exudate សំបូរ Fibrinogen ងាយនឹងកក បើកកមិនអាចរាប់កោសិកាបានទេ), 2. Plain tube (Red top / Heparin) សម្រាប់ Biochemistry (Protein, LDH, Glucose), និង 3. Sterile container សម្រាប់ Microbiology (Gram stain & Culture)។"
+  },
+  {
+    topic: "Urine Specimen Collection — Midstream Clean-Catch Rationale [Understand]",
+    title: "តើហេតុអ្វីបានជាការប្រមូលសំណាកទឹកនោមសម្រាប់ការពិនិត្យទូទៅ និងការបណ្តុះមេរោគ តម្រូវឱ្យយកតែទឹកនោមវគ្គកណ្តាល (Midstream Clean-Catch Specimen) ដោយចាក់ចោលទឹកនោមវគ្គដំបូង?",
+    hint: "ទឹកនោមវគ្គដំបូងលាងសម្អាតកម្ទេចកោសិកា និងបាក់តេរី Normal flora នៅមាត់បង្ហូរនោមចេញចោល។",
+    options: [
+      { text: "ដើម្បីឱ្យទឹកនោមវគ្គដំបូងជួយលាងសម្អាតកម្ទេចកោសិកា និងបាក់តេរីធម្មជាតិនៅមាត់ Urethra ចេញកុំឱ្យប្រឡាក់សំណាក", isCorrect: true },
+      { text: "ដើម្បីកាត់បន្ថយកំហាប់ជាតិស្ករ Glucose កុំឱ្យឡើងខ្ពស់លើសកម្រិត", isCorrect: false },
+      { text: "ព្រោះទឹកនោមវគ្គដំបូងមានផ្ទុកជាតិពុលអាស៊ីតខ្លាំងដែលអាចរំលាយកំប៉ុងប្លាស្ទិក", isCorrect: false },
+      { text: "ដើម្បីកុំឱ្យបាត់បង់អ័រម៉ូន Erythropoietin (EPO) ចូលទៅក្នុងកំប៉ុងពិសោធន៍", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀន Lesson 2 (ការណែនាំចំពោះអ្នកជំងឺ ស្លាយ ៦, ១៥) ចែងច្បាស់ថា៖ តម្រូវឱ្យយកទឹកនោមវគ្គកណ្តាល (Midstream clean-catch) ពីព្រោះទឹកនោមផ្នែកដំបូងបង្អស់ដើរតួនាទីលាងសម្អាតបាក់តេរី និងកោសិកា epithelial cells នៃ Normal flora ដែលរស់នៅលើស្បែកចុងប្រដាប់ភេទ និងមាត់ Urethra ចេញចោល ដើម្បីកុំឱ្យមានការប្រឡាក់មេរោគក្រៅផ្លូវនោម (Contamination) នាំឱ្យច្រឡំក្នុងការបកស្រាយរោគវិនិច្ឆ័យ។"
+  },
+  {
+    topic: "Urine Reagent Strip Quality Control — Frequency & Failure [Apply]",
+    title: "យោងតាមស្តង់ដារគ្រប់គ្រងគុណភាព (Quality Control of Reagent Strip) ក្នុងស្លាយមេរៀន Lesson 4 តើអ្នកបច្ចេកទេសត្រូវអនុវត្តការរត់ Positive និង Negative Controls នៅពេលណាខ្លះ?",
+    hint: "រាល់ពេលបើកប្រអប់ថ្មី រាល់ថ្ងៃក្នុងមន្ទីរពិសោធន៍ ពេលសង្ស័យលទ្ធផល និងក្រោយពេលជួសជុលម៉ាស៊ីន។",
+    options: [
+      { text: "រាល់ពេលបើកប្រអប់បន្ទះតេស្តថ្មី, រាល់ថ្ងៃក្នុងមន្ទីរពិសោធន៍, ពេលសង្ស័យលទ្ធផលមិនប្រក្រតី, និងក្រោយពេលជួសជុលឧបករណ៍", isCorrect: true },
+      { text: "ធ្វើតែម្តងគត់ក្នុងមួយឆ្នាំនៅពេលក្រុមហ៊ុនផ្គត់ផ្គង់ចុះមកត្រួតពិនិត្យ", isCorrect: false },
+      { text: "ធ្វើតែនៅពេលណាដែលអ្នកជំងឺទាមទារសុំមើលលទ្ធផលត្រួតពិនិត្យគុណភាពប៉ុណ្ណោះ", isCorrect: false },
+      { text: "មិនចាំបាច់ធ្វើ QC ឡើយប្រសិនបើកាលបរិច្ឆេទលើប្រអប់នៅសល់ច្រើនខែ", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 4 (ការគ្រប់គ្រងគុណភាព Reagent Strip ស្លាយ ២១)៖ ការត្រួតពិនិត្យគុណភាពផ្ទៃក្នុង Internal Quality Control (IQC) ដោយប្រើ Positive និង Negative control urine ត្រូវតែធ្វើឡើង៖ 1. រាល់ពេលបើកប្រអប់ strip ថ្មី, 2. រាល់ថ្ងៃពេលចាប់ផ្តើមការងារ (Daily), 3. រាល់ពេលសង្ស័យលទ្ធផលមិនប្រក្រតី ឬមិនស៊ីសង្វាក់នឹងគ្លីនិក, និង 4. បន្ទាប់ពីការធ្វើ Maintenance ឬជួសជុលម៉ាស៊ីនអាន Dipstick។"
+  },
+  {
+    topic: "Urine Color — Alkaptonuria & Melanin [Analyze]",
+    title: "សំណាកទឹកនោមរបស់អ្នកជំងឺម្នាក់ពេលទើបនឹងនោមចេញមកមានពណ៌លឿងធម្មតា ប៉ុន្តែក្រោយពេលទុកចោលត្រូវខ្យល់ និងពន្លឺមួយរយៈ ទឹកនោមប្រែពណ៌ទៅជាខ្មៅក្រមៅ (Black urine)។ តើជំងឺមេតាប៉ូលីសពីកំណើតមួយណាដែលបណ្តាលឱ្យមានបាតុភូតនេះ?",
+    hint: "Alkaptonuria (កង្វះអង់ស៊ីម homogentisate oxidase បណ្តាលឱ្យកកកុញ Homogentisic acid ឡើងខ្មៅពេលត្រូវខ្យល់)។",
+    options: [
+      { text: "Alkaptonuria (ការកកកុញអាស៊ីត Homogentisic acid ដែលឡើងពណ៌ខ្មៅពេលត្រូវអុកស៊ីតកម្មដោយខ្យល់)", isCorrect: true },
+      { text: "Diabetes Mellitus ដោយសារការកកកុញជាតិស្ករគ្លុយកូសក្នុងប្លោកនោម", isCorrect: false },
+      { text: "Urinary Tract Infection បង្កឡើងដោយបាក់តេរី Escherichia coli", isCorrect: false },
+      { text: "ការខូចតម្រងនោមស្រួចស្រាវដោយសារការលេបថ្នាំប៉ារ៉ាសេតាមុលលើសកម្រិត", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀន Lesson 3 (Abnormal urine color ស្លាយ ៩) ចែងថា៖ ទឹកនោមពណ៌ខ្មៅ (Black urine) ជួបប្រទះក្នុងជំងឺ Alkaptonuria (កង្វះអង់ស៊ីម homogentisic acid oxidase ធ្វើឱ្យ Homogentisic acid កកកុញក្នុងទឹកនោម ហើយប្រែជាពណ៌ខ្មៅពេលត្រូវខ្យល់ និង pH បាស) ឬ Melanin ក្នុងជំងឺមហារីកស្បែក Melanoma។"
+  },
+  {
+    topic: "Urine Specific Gravity — Pre-renal Azotemia vs ATN [Evaluate]",
+    title: "អ្នកជំងឺខ្សោយតម្រងនោមស្រួចស្រាវ (Acute Renal Failure) ម្នាក់មាន Oliguria។ ពិនិត្យទឹកនោមឃើញ Specific Gravity = 1.010 ថេរស្មើនឹង Glomerular filtrate (Isosthenuria)។ ផ្អែកលើមេរៀន តើតម្លៃនេះជួយបែងចែកបញ្ហា Pre-renal ឬ Renal tubular damage ដូចម្តេច?",
+    hint: "SG = 1.010 ថេរ (Isosthenuria) បញ្ជាក់ពីការខូចខាតបំពង់តម្រងនោម (Intrinsic Renal Failure / ATN) មិនអាច concentrate ទឹកនោមបាន។",
+    options: [
+      { text: "បញ្ជាក់ពី Intrinsic Renal Failure (ATN) ព្រោះបំពង់ទុបុយឡាខូចខាតបាត់បង់សមត្ថភាពប្រមូលផ្តុំកំហាប់ (Concentrating ability)", isCorrect: true },
+      { text: "បញ្ជាក់ពី Pre-renal Failure ព្រោះតម្រងនោមនៅតែមានសមត្ថភាពស្រូបទឹកមកវិញបានយ៉ាងល្អឥតខ្ចោះ", isCorrect: false },
+      { text: "បញ្ជាក់ពីជំងឺ Post-renal Obstruction ដោយសារដុំសាច់សង្កត់លើបង្ហួរនោមខាងក្រៅ", isCorrect: false },
+      { text: "ជាសញ្ញាបញ្ជាក់ថាអ្នកជំងឺបានជាសះស្បើយពីជំងឺខ្សោយតម្រងនោមទាំងស្រុង", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 3 (Specific Gravity ស្លាយ ៣០-៣១)៖ Specific Gravity ជួយបែងចែក Pre-renal vs Renal failure។ ក្នុង Pre-renal failure (តម្រងនោមនៅល្អ តែខ្វះឈាមហូរមក) តម្រងនោមនឹងស្រូបទឹកយ៉ាងខ្លាំង ធ្វើឱ្យទឹកនោមខាប់ខ្លាំង (SG > 1.020)។ ផ្ទុយទៅវិញ ក្នុង Intrinsic Renal Failure (Acute Tubular Necrosis / ATN) បំពង់ទុបុយឡាខូចខាត បាត់បង់សមត្ថភាព concentrate ឬ dilute ទឹកនោម ធ្វើឱ្យ SG ជាប់គាំងថេរនៅ 1.010 (Isosthenuria) ស្មើនឹង Glomerular filtrate ដើម។"
+  },
+  {
+    topic: "Urine Sediment — Broad Casts as 'Renal Failure Casts' [Analyze]",
+    title: "ហេតុអ្វីបានជា Broad Casts ត្រូវបានគេប្រសិទ្ធនាមថាជា 'Renal Failure Casts' ហើយមានទំហំធំជាងស៊ីឡាំងធម្មតាដល់ទៅ ២ ទៅ ៣ ដង?",
+    hint: "ពួកវាកកើតឡើងក្នុងបំពង់ Collecting ducts ដែលរីកធំខុសប្រក្រតីអំឡុងពេលស្ទះលំហូរទឹកនោមរ៉ាំរ៉ៃ (Severe urinary stasis)។",
+    options: [
+      { text: "ព្រោះពួកវាកកើតក្នុងបំពង់ Collecting ducts ដែលរីកទូលាយខ្លាំងក្នុងស្ថានភាពស្ទះលំហូរទឹកនោមរ៉ាំរ៉ៃ (Severe urinary stasis)", isCorrect: true },
+      { text: "ព្រោះពួកវាត្រូវបានផលិតចេញពីប្លោកនោមផ្ទាល់នៅពេលដែលប្លោកនោមផ្ទុកទឹកនោមលើសចំណុះ", isCorrect: false },
+      { text: "ព្រោះពួកវាផ្សំឡើងពីកោសិកាឈាមក្រហមបំប្លែងខ្លួនជាគ្រាប់ខ្សាច់ធំៗ", isCorrect: false },
+      { text: "ព្រោះពួកវាកកើតឡើងតែចំពោះអ្នកជំងឺដែលខ្វះជាតិស្ករគ្លុយកូសក្នុងខួរក្បាល", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយ Lesson 3 (Microscopic examination ស្លាយ ៣៥)៖ Broad casts (ទំហំធំទូលាយ) ឆ្លុះបញ្ចាំងពីការកកស្ទះ និងបង្កើតជាទម្រង់នៅក្នុងបំពង់ Collecting tubules ឬ Collecting ducts ដែលបានរីកធំខុសប្រក្រតី (Dilated tubules) ដោយសារតែ Nephrons ជុំវិញបានងាប់រលត់អស់ក្នុងជំងឺខ្សោយតម្រងនោមរ៉ាំរ៉ៃដំណាក់កាលធ្ងន់ធ្ងរ (End-stage renal failure)។"
+  },
+  {
+    topic: "Urine Physical Exam — Pseudomonas Infection Color [Analyze]",
+    title: "អ្នកជំងឺម្នាក់មានការឆ្លងរោគផ្លូវទឹកនោមក្នុងមន្ទីរពេទ្យ (Catheter-associated UTI) នោមចេញមកមានពណ៌ខៀវលាយបៃតង (Blue-green urine)។ តើមេរោគបាក់តេរីណាដែលជាភ្នាក់ងារបង្កហេតុចម្បង?",
+    hint: "Pseudomonas aeruginosa បញ្ចេញសារធាតុពណ៌បៃតង Pyocyanin និង Pyoverdine។",
+    options: [
+      { text: "Pseudomonas aeruginosa (បាក់តេរីបញ្ចេញសារធាតុពណ៌ Pyocyanin និង Pyoverdine ធ្វើឱ្យទឹកនោមឡើងបៃតង)", isCorrect: true },
+      { text: "Escherichia coli ដែលបញ្ចេញជាតិអាស៊ីតឡាក់ទិកកំហាប់ខ្ពស់", isCorrect: false },
+      { text: "Staphylococcus aureus ដែលបំបែកកោសិកាឈាមសឱ្យក្លាយជាខ្ទុះលឿង", isCorrect: false },
+      { text: "Klebsiella pneumoniae ដែលស្រូបយកជាតិដែកពីប្លាស្មាឈាម", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយ Lesson 3 (Abnormal urine color ស្លាយ ៨)៖ ទឹកនោមពណ៌ខៀវ ឬបៃតង (Blue/Green urine) បណ្តាលមកពី៖ 1. ការឆ្លងមេរោគដោយបាក់តេរី Pseudomonas spp. (ដែលផលិតសារធាតុពណ៌បៃតង Pyocyanin/Pyoverdine), 2. ការប្រើប្រាស់ឱសថ Methylene blue, ឬ 3. ពណ៌ជ្រលក់ចំណីអាហារ (Food dyes)។"
+  },
+  {
+    topic: "Urine Sediment — Transitional vs Squamous Epithelial Origin [Understand]",
+    title: "យោងតាមប្រភពកាយវិភាគវិទ្យានៃកោសិកាអេពីថេល្យូមក្នុងទឹកនោម តើកោសិកា Transitional Epithelial Cells មានប្រភពរបូតចេញពីទីតាំងសរីរាង្គណាខ្លះ?",
+    hint: "កោសិកា Transitional (Urothelial) ស្រោបលើ Renal pelvis, Calyces, Ureter និងប្លោកនោម (Bladder)។",
+    options: [
+      { text: "Renal pelvis, Ureters, ប្លោកនោម (Bladder), និងផ្នែកខាងលើនៃបង្ហួរនោម Urethra", isCorrect: true },
+      { text: "ទ្វារមាសរបស់ស្ត្រី និងស្បែកចុងលិង្គខាងក្រៅរបស់បុរស", isCorrect: false },
+      { text: "បំពង់កោងជិត Proximal Convoluted Tubule និង Loop of Henle", isCorrect: false },
+      { text: "ស្រទាប់ខាងក្នុងនៃបេះដូង និងសរសៃឈាមអាក់ទែតម្រងនោម", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀន Lesson 1 និង Lesson 5 ចែងថា៖ Transitional epithelial cells (Urothelial cells) មានរាងពងក្រពើ ឬរាងផ្លែសារី ស្រោបផ្ទៃផ្លូវទឹកនោមចាប់ពី Renal pelvis, Calyces, Ureters, រហូតដល់ Bladder និងផ្នែកខាងលើនៃ Urethra។ ចំណែកឯ Squamous epithelial cells មកពីទ្វារមាស និងចុង Urethra ខាងក្រៅ។ Renal tubular epithelial cells មកពី Nephron tubules។"
+  },
+  {
+    topic: "Body Fluids — Synovial Fluid Tubes & Crystal Precautions [Apply]",
+    title: "ពេលទទួលសំណាកទឹកសន្លាក់ (Synovial fluid) ដើម្បីពិនិត្យរកគ្រីស្តាល់ហ្គោដ (Urate crystals) ហេតុអ្វីបានជាមន្ទីរពិសោធន៍ហាមដាច់ខាតមិនឱ្យប្រើបំពង់ដែលមានសារធាតុម្សៅកាល់ស្យូមអុកសាឡាត ឬ Lithium Heparin ខ្លាំងជ្រុល?",
+    hint: "គ្រីស្តាល់ម្សៅគីមីពី anticoagulant អាចច្រឡំជាមួយគ្រីស្តាល់បង្កជំងឺក្នុងសន្លាក់ (Artifact crystals)។",
+    options: [
+      { text: "ព្រោះកម្ទេចគ្រីស្តាល់នៃសារធាតុ Anticoagulant អាចបង្កជា Artifact ច្រឡំជាមួយគ្រីស្តាល់រោគវិនិច្ឆ័យក្នុងសន្លាក់", isCorrect: true },
+      { text: "ព្រោះសារធាតុ Anticoagulant នឹងធ្វើឱ្យទឹកសន្លាក់ប្រែជាកកស្អិតដូចស៊ីម៉ងត៍", isCorrect: false },
+      { text: "ព្រោះវានឹងរំលាយបំបែកកោសិកាឈាមស Neutrophils ទាំងអស់ក្នុងរយៈពេល ១ វិនាទី", isCorrect: false },
+      { text: "ព្រោះសារធាតុទាំងនោះធ្វើឱ្យបាត់បង់ជាតិទឹករំអិល Hyaluronic acid ទាំងស្រុង", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀន Lesson 6 (Synovial Fluid Collection)៖ ការពិនិត្យគ្រីស្តាល់ក្នុងទឹកសន្លាក់ត្រូវប្រើបំពង់ Plain (គ្មានសារធាតុបន្ថែម) ឬ Sodium heparin រាវ។ ការប្រើប្រាស់បំពង់ដែលមានម្សៅ Crystalline anticoagulants (ដូចជា Oxalate, Powdered EDTA) អាចបង្កើតជា Artifactual crystals ដែលបញ្ចេញពន្លឺ Birefringence ច្រឡំជាមួយ Monosodium urate (Gout) ឬ CPPD (Pseudogout)។"
+  },
+  {
+    topic: "Serous Fluids — Chylous vs Pseudochylous Effusion [Analyze]",
+    title: "សារធាតុរាវបូមចេញពីប្រហោងទ្រូង (Pleural fluid) មានសភាពពណ៌សល្អក់ដូចទឹកដោះ (Milky appearance)។ ពេលពិនិត្យជីវគីមីឃើញកំហាប់ Triglycerides ឡើងខ្ពស់ខ្លាំង (>110 mg/dL) ជាមួយវត្តមានគ្រាប់ Chylomicrons។ តើនេះជាសញ្ញានៃអ្វី?",
+    hint: "Chylous effusion បណ្តាលមកពីការដាច់រហែក ឬស្ទះបំពង់ទឹករងៃធំ Thoracic duct។",
+    options: [
+      { text: "Chylous effusion ដែលបណ្តាលមកពីការដាច់រហែក ឬស្ទះបំពង់ទឹករងៃទ្រូង (Thoracic duct disruption/obstruction)", isCorrect: true },
+      { text: "Pseudochylous effusion ដែលបណ្តាលមកពីការកកកុញកូលេស្តេរ៉ុលក្នុងជំងឺរលាកសន្លាក់រ៉ាំរ៉ៃ", isCorrect: false },
+      { text: "Empyema សុទ្ធសាធដែលផ្សំឡើងតែពីកោសិកាខ្ទុះ និងបាក់តេរីស្អុយរលួយ", isCorrect: false },
+      { text: "ការច្រឡំបូមប៉ះសាច់សួតដែលសំបូរទៅដោយឧស្ម័នអុកស៊ីសែន", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយ Lesson 7 (Gross Appearance ស្លាយ ៣០)៖ ទឹកសដូចទឹកដោះ (Milky effusion) ចែកជាពីរ៖ 1. Chylous effusion: កើតពីការខូចខាត ឬស្ទះបំពង់ទឹករងៃ Thoracic duct (ដោយសារ Trauma ឬ Lymphoma) សំបូរ Triglycerides (>110 mg/dL) និង Chylomicrons; 2. Pseudochylous effusion: កើតក្នុងជំងឺរលាករ៉ាំរ៉ៃ (Chronic pleuritis, RA) សំបូរ Cholesterol crystals តែ Triglycerides ទាប (<50 mg/dL)។"
+  },
+  {
+    topic: "Serous Fluids — Hemorrhagic vs Traumatic Aspiration [Evaluate]",
+    title: "ពេលធ្វើ Paracentesis បូមទឹកពោះ ទទួលបានសារធាតុរាវឡើងពណ៌ក្រហមឈាម (Bloody ascitic fluid)។ តើអ្នកបច្ចេកទេសអាចផ្ទៀងផ្ទាត់ដោយរបៀបណាដើម្បីដឹងថាជាការហូរឈាមពិតក្នុងពោះ (True hemoperitoneum) ឬគ្រាន់តែជាការចាក់ប៉ះសរសៃឈាមពេលចាក់ម្ជុល (Traumatic tap)?",
+    hint: "Traumatic tap ឈាមមិនស្មើគ្នា និងងាយកក (Clots); True hemorrhage ឈាមរាយស្មើ និងមិនកកឡើយ (Defibrinated)។",
+    options: [
+      { text: "Traumatic tap ឈាមចេញមិនស្មើគ្នានិងអាចកកជាដុំ (Clots) រីឯ True hemorrhage ឈាមចេញស្មើគ្នានិងមិនកកឡើយ", isCorrect: true },
+      { text: "Traumatic tap តែងតែមានផ្ទុកកោសិកាមហារីក Malignant cells យ៉ាងច្រើន", isCorrect: false },
+      { text: "True hemorrhage នឹងធ្វើឱ្យទឹកពោះប្រែពណ៌ទៅជាបៃតងចាស់ភ្លាមៗ", isCorrect: false },
+      { text: "វិធីសាស្ត្រតែមួយគត់គឺត្រូវយកទឹកពោះទៅបណ្តុះមេរោគរង់ចាំរយៈពេល ៧ ថ្ងៃ", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀន Lesson 7 (Gross appearance: Bloody fluid) បញ្ជាក់ថា៖ ដើម្បីញែកដាច់រវាងការហូរឈាមពិត (True hemorrhage/Malignancy) និង Traumatic tap៖ ក្នុង Traumatic tap ឈាមហូរចេញមិនស្មើគ្នា (Streaking / Clears during aspiration) ហើយទឹកសេរ៉ូសងាយនឹងកកជាដុំ (Clots) ព្រោះមាន Fibrinogen ស្រស់។ ផ្ទុយទៅវិញ ក្នុង True internal bleeding ឈាមមានពណ៌ក្រហមស្មើជាប់រហូត ហើយមិនកកឡើយ ពីព្រោះ Fibrinogen ត្រូវបានរំលាយបំបែករួចរាល់ក្នុងប្រហោងពោះ (Defibrinated)។"
+  }
+];
+
+function shuffleArray(arr) {
+  const newArr = [...arr];
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr;
+}
+
+let activeQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let timeLeft = 60;
+let timerInterval = null;
+let answered = false;
+let userResults = [];
+
+function initQuiz() {
+  activeQuestions = shuffleArray(rawQuestions).map(q => {
+    return {
+      ...q,
+      options: shuffleArray(q.options)
+    };
+  });
+  
+  currentIndex = 0;
+  score = 0;
+  userResults = [];
+  document.getElementById('finalCard').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  loadQuestion(currentIndex);
+}
+
+function loadQuestion(index) {
+  answered = false;
+  timeLeft = 60;
+  clearInterval(timerInterval);
+  
+  const q = activeQuestions[index];
+  document.getElementById('topicBadge').textContent = q.topic;
+  document.getElementById('qCount').textContent = `សំណួរទី ${index + 1} នៃ ${activeQuestions.length}`;
+  document.getElementById('questionTitle').textContent = `${index + 1}. ${q.title}`;
+  
+  const diagBox = document.getElementById('diagramContainer');
+  if (q.svg) {
+    diagBox.innerHTML = q.svg;
+    diagBox.style.display = 'flex';
+  } else {
+    diagBox.innerHTML = '';
+    diagBox.style.display = 'none';
+  }
+
+  document.getElementById('hintContent').textContent = q.hint;
+  document.getElementById('hintContent').style.display = 'none';
+  document.getElementById('feedbackBox').style.display = 'none';
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = (index === activeQuestions.length - 1) ? "ពិនិត្យលទ្ធផល →" : "សំណួរបន្ទាប់ →";
+  
+  const optionsGrid = document.getElementById('optionsGrid');
+  optionsGrid.innerHTML = '';
+  q.options.forEach((optObj, optIdx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="letter">${String.fromCharCode(65 + optIdx)}.</span> <span>${optObj.text}</span>`;
+    btn.onclick = () => selectOption(optIdx);
+    optionsGrid.appendChild(btn);
+  });
+  
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    if (timeLeft > 0) {
+      timeLeft--;
+      updateTimerUI();
+    } else {
+      clearInterval(timerInterval);
+      if (!answered) {
+        handleTimeout();
+      }
+    }
+  }, 1000);
+  
+  updateProgress();
+}
+
+function updateTimerUI() {
+  const el = document.getElementById('timerText');
+  const box = document.getElementById('timerBox');
+  el.textContent = timeLeft + 's';
+  if (timeLeft <= 10) {
+    box.classList.add('urgent');
+  } else {
+    box.classList.remove('urgent');
+  }
+}
+
+function toggleHint() {
+  const h = document.getElementById('hintContent');
+  h.style.display = h.style.display === 'none' ? 'block' : 'none';
+}
+
+function selectOption(chosenIdx) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+  
+  const q = activeQuestions[currentIndex];
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(btn => btn.disabled = true);
+  
+  const correctIdx = q.options.findIndex(o => o.isCorrect);
+  const isCorrect = q.options[chosenIdx].isCorrect;
+  
+  if (isCorrect) {
+    score++;
+    buttons[chosenIdx].classList.add('correct');
+  } else {
+    buttons[chosenIdx].classList.add('wrong');
+    buttons[correctIdx].classList.add('correct');
+  }
+  
+  userResults.push({
+    q: q.title,
+    chosen: q.options[chosenIdx].text,
+    correctText: q.options[correctIdx].text,
+    isCorrect: isCorrect,
+    why: q.rationale
+  });
+  
+  document.getElementById('liveScore').textContent = `ពិន្ទុ: ${score} / ${currentIndex + 1}`;
+  document.getElementById('feedbackText').textContent = q.rationale;
+  document.getElementById('feedbackBox').style.display = 'block';
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function handleTimeout() {
+  answered = true;
+  const q = activeQuestions[currentIndex];
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(btn => btn.disabled = true);
+  const correctIdx = q.options.findIndex(o => o.isCorrect);
+  buttons[correctIdx].classList.add('correct');
+  
+  userResults.push({
+    q: q.title,
+    chosen: "អស់ពេល (Time Expired)",
+    correctText: q.options[correctIdx].text,
+    isCorrect: false,
+    why: q.rationale
+  });
+  
+  document.getElementById('feedbackText').innerHTML = '<strong style="color:#ef4444;">អស់ពេល ៦០ វិនាទី! (Time Expired)</strong><br>' + q.rationale;
+  document.getElementById('feedbackBox').style.display = 'block';
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < activeQuestions.length) {
+    loadQuestion(currentIndex);
+  } else {
+    showFinalResults();
+  }
+}
+
+function updateProgress() {
+  const pct = ((currentIndex + 1) / activeQuestions.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function showFinalResults() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('finalCard').style.display = 'block';
+  const pct = Math.round((score / activeQuestions.length) * 100);
+  document.getElementById('finalScoreVal').textContent = `${score} / ${activeQuestions.length} (${pct}%)`;
+  
+  let msg = '';
+  if (pct >= 80) msg = 'ល្អប្រសើរណាស់! អ្នកយល់ដឹងច្បាស់លាស់ពីការវិភាគគីមីទឹកនោម កករមីក្រូទស្សន៍ និងសារធាតុរាវក្នុងរាងកាយ (Body Fluids) សម្រាប់ត្រៀមប្រឡងឆមាស។';
+  else if (pct >= 60) msg = 'លទ្ធផលល្អបង្គួរ! គួររំលឹកបន្ថែមលើលក្ខណៈវិនិច្ឆ័យ Light\'s Criteria (Transudate vs Exudate), គ្រីស្តាល់ក្នុងទឹកសន្លាក់, និងកំហុសរំខានដោយវីតាមីនសេ។';
+  else msg = 'ត្រូវរំលឹកមេរៀនឡើងវិញ ជាពិសេសការបកស្រាយ CSF ក្នុងរលាកស្រោមខួរ, ស៊ីឡាំង Muddy brown casts ក្នុង ATN, និងសារធាតុគីមីលើបន្ទះ Dipstick។';
+  document.getElementById('finalFeedback').textContent = msg;
+
+  const reviewEl = document.getElementById('reviewContainer');
+  reviewEl.innerHTML = '<h3 style="margin-bottom:12px; color:var(--primary);">ពិនិត្យចម្លើយលម្អិត (Urinalysis & Body Fluids Review):</h3>' + 
+    userResults.map((r, i) => `
+      <details class="review-item">
+        <summary>${i + 1}. ${r.isCorrect ? "✓ ត្រឹមត្រូវ" : "✗ ខុស"} — ${r.q.substring(0, 50)}...</summary>
+        <p><strong>សំណួរពេញលេញ៖</strong> ${r.q}</p>
+        <p><strong>ចម្លើយរបស់អ្នក៖</strong> <span style="color:${r.isCorrect ? '#86efac' : '#fca5a5'}">${r.chosen}</span></p>
+        <p><strong>ចម្លើយត្រឹមត្រូវ៖</strong> <span style="color:#86efac">${r.correctText}</span></p>
+        <p><strong>ការពន្យល់លម្អិត៖</strong> ${r.why}</p>
+      </details>
+    `).join('');
+}
+
+window.onload = initQuiz;
+</script>
+</body>
+</html>
